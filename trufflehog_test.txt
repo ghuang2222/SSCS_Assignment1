@@ -1,1 +1,0 @@
-AWS_TOKEN = secrettoken1234567890

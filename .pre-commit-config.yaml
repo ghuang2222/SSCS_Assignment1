@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: TruffleHog Secret Scanner
+        entry: trufflehog --no-update git file://. --since-commit HEAD --only-verified --fail
+        language: system
+        stages: [pre-commit]

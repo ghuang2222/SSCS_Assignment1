@@ -1,0 +1,192 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> main.py:1:1
+  |
+1 | / import argparse
+2 | | from util import extract_public_key, verify_artifact_signature
+3 | | from merkle_proof import DefaultHasher, verify_consistency, verify_inclusion, compute_leaf_hash
+4 | | import requests
+5 | | import json
+6 | | import base64
+  | |_____________^
+7 |
+8 |   def get_log_entry(log_index, debug=False):
+  |
+help: Organize imports
+   |
+1  | import argparse
+2  + import base64
+3  + import json
+4  +
+5  + import requests
+6  +
+7  + from merkle_proof import (
+8  +     DefaultHasher,
+9  +     compute_leaf_hash,
+10 +     verify_consistency,
+11 +     verify_inclusion,
+12 + )
+13 | from util import extract_public_key, verify_artifact_signature
+   - from merkle_proof import DefaultHasher, verify_consistency, verify_inclusion, compute_leaf_hash
+   - import requests
+   - import json
+   - import base64
+14 |
+15 +
+16 | def get_log_entry(log_index, debug=False):
+   |
+
+RUF015 Prefer `next(iter(response.keys()))` over single element slice
+  --> main.py:13:22
+   |
+11 |     response = requests.get(endpoint + "?logIndex=" + str(log_index)).json()
+12 |     response.raise_for_status()
+13 |     entry = response[list(response.keys())[0]]    
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^
+14 |     return entry
+   |
+help: Replace with `next(iter(response.keys()))`
+   |
+12 |     response.raise_for_status()
+   -     entry = response[list(response.keys())[0]]    
+13 +     entry = response[next(iter(response.keys()))]    
+14 |     return entry
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+SIM115 Use a context manager for opening files
+  --> main.py:44:16
+   |
+42 |     #verify artifact filepath sanity
+43 |     try:
+44 |         file = open(artifact_filepath, 'r')
+   |                ^^^^
+45 |         #print("Valid artifact filepath")
+46 |     except Exception as e:
+   |
+
+TRY203 Remove exception handler; error is immediately re-raised
+  --> main.py:46:5
+   |
+44 |           file = open(artifact_filepath, 'r')
+45 |           #print("Valid artifact filepath")
+46 | /     except Exception as e:
+47 | |         raise(e)
+   | |________________^
+48 |       finally:
+49 |           file.close()
+   |
+
+TRY201 Use `raise` without specifying exception name
+  --> main.py:47:15
+   |
+45 |         #print("Valid artifact filepath")
+46 |     except Exception as e:
+47 |         raise(e)
+   |               ^
+48 |     finally:
+49 |         file.close()
+   |
+help: Remove exception name
+   |
+46 |     except Exception as e:
+   -         raise(e)
+47 +         raise
+48 |     finally:
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> merkle_proof.py:1:1
+  |
+1 | / import hashlib
+2 | | import binascii
+3 | | import base64
+  | |_____________^
+4 |
+5 |   # domain separation prefixes according to the RFC
+  |
+help: Organize imports
+  |
+1 + import base64
+2 + import binascii
+3 | import hashlib
+  - import binascii
+  - import base64
+4 |
+  |
+
+FURB161 Use of `bin(index >> inner).count('1')`
+  --> merkle_proof.py:88:14
+   |
+86 | def decomp_incl_proof(index, size):
+87 |     inner = inner_proof_size(index, size)
+88 |     border = bin(index >> inner).count('1')
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+89 |     return inner, border
+   |
+help: Replace with `(index >> inner).bit_count()`
+   |
+87 |     inner = inner_proof_size(index, size)
+   -     border = bin(index >> inner).count('1')
+88 +     border = (index >> inner).bit_count()
+89 |     return inner, border
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> util.py:1:1
+  |
+1 | / from cryptography import x509
+2 | | from cryptography.hazmat.backends import default_backend
+3 | | from cryptography.hazmat.primitives import serialization
+4 | |
+5 | | from cryptography.hazmat.primitives import hashes
+6 | | from cryptography.hazmat.primitives.asymmetric import ec
+7 | | from cryptography.hazmat.primitives.serialization import load_pem_public_key
+8 | | from cryptography.exceptions import InvalidSignature
+  | |____________________________________________________^
+help: Organize imports
+  |
+1 | from cryptography import x509
+2 + from cryptography.exceptions import InvalidSignature
+3 | from cryptography.hazmat.backends import default_backend
+  - from cryptography.hazmat.primitives import serialization
+  -
+  - from cryptography.hazmat.primitives import hashes
+4 + from cryptography.hazmat.primitives import hashes, serialization
+5 | from cryptography.hazmat.primitives.asymmetric import ec
+6 | from cryptography.hazmat.primitives.serialization import load_pem_public_key
+  - from cryptography.exceptions import InvalidSignature
+7 |
+  |
+
+F841 [*] Local variable `e` is assigned to but never used
+  --> util.py:57:32
+   |
+55 |             ec.ECDSA(hashes.SHA256())
+56 |         )
+57 |     except InvalidSignature as e:
+   |                                ^
+58 |         print("Signature is invalid")
+59 |     except Exception as e:
+   |
+help: Remove assignment to unused variable `e`
+   |
+56 |         )
+   -     except InvalidSignature as e:
+57 +     except InvalidSignature:
+58 |         print("Signature is invalid")
+   |
+
+BLE001 Do not catch blind exception: `Exception`
+  --> util.py:59:12
+   |
+57 |     except InvalidSignature as e:
+58 |         print("Signature is invalid")
+59 |     except Exception as e:
+   |            ^^^^^^^^^
+60 |         print("Exception in verifying artifact signature:", e)
+   |
+
+Found 10 errors.
+[*] 4 fixable with `--fix` (3 unsafe fixes available with `--fix --unsafe-fixes`).
