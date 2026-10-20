@@ -1,0 +1,27 @@
+# .gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Testing & Coverage outputs
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+
+# Environment variables & secrets
+.env
+*.pem
+*.sig

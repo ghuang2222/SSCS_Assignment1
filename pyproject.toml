@@ -1,0 +1,49 @@
+[project]
+name = "sscs-assignment1"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "ghuang2222",email = "gh2222@nyu.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+   "certifi==2026.7.22",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "cryptography==50.0.2",
+    "idna==3.20",
+    "pycparser==3.0",
+    "requests==2.34.2",
+    "typing_extensions==4.16.0",
+    "urllib3==2.8.0"
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+mypy = "*"
+bandit = "*"
+pytest = "^9.1.1"
+pytest-cov = "^7.1.0"
+
+[tool.ruff]
+
+[tool.mypy]
+
+[tool.bandit]
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+pythonpath = ["."]
+addopts = "--cov=. --cov-report=term-missing --cov-report=html"
+testpaths = [
+    "tests",
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
